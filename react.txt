@@ -1,0 +1,37 @@
+props state
+usestate 
+function components
+class compnonents
+
+state
+-state data stored winthn the compnents
+prop nothing but data which we can send to the compnent
+-pararmeter to the componenet
+-helpful to pass data from one compnenet to another compnent
+
+input1 = React.createRef();
+
+? parameterized queries
+checked exceptions unbecheked exceptions
+prepareStatement() - parametarized query insert into student values (?,?,?,?)
+createStatement() - prepare query ex. Select * from student;
+
+branching, merging , pullrequest 
+
+git init - to initialize this folder to be used as project folder
+git branch - to seee which current branch your on. (master) or newbranch
+git status
+git commit -m "This is my first commit" //add existing files
+git commit
+git log
+git add - to track . myfile.txt
+git add .    or git add Apple.txt
+git restore - if you dont want the changes
+git merge newbranch
+type myfile.txt - to see current / or to see recent changes
+git branch -M main
+git push -u origin main
+
+git remote add origin https://github.com/iSpensah/Practice.git
+git remote remove origin
+how to create branch
