@@ -1,10 +1,9 @@
-package jdbc;
 import java.sql.*;
 
 public class dbFunctions {
 	// ResultSet result = getSQLConnection().createStatement().executeQuery("Select
 	// * from StudentData");
-	private Connection getSQLConnection() { // getSQL Connection
+	private static Connection getSQLConnection() { // getSQL Connection
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE", "system", "atos123$");
@@ -48,6 +47,30 @@ public class dbFunctions {
 		}
 	}
 	
+	public static boolean validate(int accid, int accpin) throws SQLException {
+		boolean answer = false;
+		String query = "Select accid from account where accid = " + accid + " and accpin = " + accpin;
+		ResultSet result = getSQLConnection().createStatement().executeQuery(query);
+		if (result.next()) {
+			return answer = true;
+		} else {
+			return answer = false;
+		}
+	}
+	
+	public static void recordTransaction(int accid, int amnt,String tranctype ) { //Record Transaction function
+		//insert into Transaction values(trancid_seq.nextval,67700,'Loan',2);
+	try {       PreparedStatement pstat;
+				String query = "insert into Transaction values(trancid_seq.nextval,?,?,?)";
+				pstat = getSQLConnection().prepareStatement(query);
+				//pstat.setString(1, "trancid_seq.nextval"); 
+				pstat.setInt(1, amnt); pstat.setString(2, tranctype); pstat.setInt(3,accid);
+				pstat.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Error"); }
+		}
+	
 	public void Deposit(int accid, int accpin, int dpamount) { // Deposit Function
 		try {
 			Connection con = getSQLConnection();
@@ -58,6 +81,7 @@ public class dbFunctions {
 			pstat.setInt(2, accid);
 			pstat.setInt(3, accpin);
 			pstat.executeUpdate();
+			recordTransaction(accid, dpamount,"deposit");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Error");
@@ -66,13 +90,22 @@ public class dbFunctions {
 	}
 	public void Withdraw(int accid, int accpin, int wdamount) { // Withdraw Function
 		try {
+			String query = "Select accbalance from account where accid = "+accid+ "and accpin = "+accpin;
+			ResultSet result = getSQLConnection().createStatement().executeQuery(query);
+			if(result.next());
+			if( wdamount <= result.getInt(1)) {
 			PreparedStatement pstat;
-			String query = "update account set accbalance = accbalance - ? where accid = ? and accpin = ?";
-			pstat = getSQLConnection().prepareStatement(query);
+			String query2 = "update account set accbalance = accbalance - ? where accid = ? and accpin = ?";
+			pstat = getSQLConnection().prepareStatement(query2);
 			pstat.setInt(1, wdamount);
 			pstat.setInt(2, accid);
 			pstat.setInt(3, accpin);
-			pstat.executeUpdate();
+			pstat.executeUpdate(); 
+			recordTransaction(accid, wdamount,"withdraw");
+			}
+			 else {
+				System.out.println("Insufficient Funds!");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
